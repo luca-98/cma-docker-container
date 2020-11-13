@@ -1,0 +1,48 @@
+version: "3"
+
+services:
+  cma-db:
+    image: postgres:12.4-alpine
+    volumes:
+      - /cma-postgres-data:/var/lib/postgresql/data
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "12345678"
+    restart: always
+  server:
+    image: cma-server-image
+    build: ./server
+    environment:
+      SPRING_APPLICATION_NAME: "CMA - Clinic Management Application"
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://cma-db:5432/postgres?currentSchema=cma"
+      SPRING_DATASOURCE_USERNAME: "postgres"
+      SPRING_DATASOURCE_PASSWORD: "12345678"
+      SPRING_FLYWAY_SCHEMAS: "cma"
+      SPRING_JPA_SHOW-SQL: "false"
+      CMA_TOKEN-SECRET-KEY: "Th!siScMas3cretK3y"
+      CMA_TOKEN-HEADER-STRING: "Authorization"
+      CMA_TOKEN-PREFIX: "Bearer"
+      CMA_TOKEN-EXPIRATION: "604800000"
+      CMA_GATEWAY-SERVER-URL: "https://cmateam.herokuapp.com/server-ip"
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    depends_on:
+      - cma-db
+    restart: always
+  client:
+    image: cma-client-image
+    build: ./client
+    expose:
+      - 80
+    ports:
+      - 80:80
+    depends_on:
+      - server
+    restart: always
