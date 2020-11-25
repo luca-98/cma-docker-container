@@ -28,7 +28,7 @@ services:
       CMA_TOKEN-HEADER-STRING: "Authorization"
       CMA_TOKEN-PREFIX: "Bearer"
       CMA_TOKEN-EXPIRATION: "604800000"
-      CMA_GATEWAY-SERVER-URL: "https://cmateam.herokuapp.com/server-ip"
+      # CMA_GATEWAY-SERVER-URL: "https://cmateam.herokuapp.com/server-ip"
     expose:
       - 8080
     ports:
